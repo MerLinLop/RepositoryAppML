@@ -3,26 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/HomeFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.appml.FirstFragment"
+        android:id="@+id/HomeFragment"
+        android:name="com.example.appml._view.HomeFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_home">
+
 
         <action
+            android:id="@+id/action_Home_to_SearchFragment"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/anim_fade_in"
+            app:exitAnim="@anim/anim_fade_out"
+            app:popEnterAnim="@anim/anim_fade_in"
+            app:popExitAnim="@anim/anim_fade_out"/>
+        <!--app:popUpToInclusive="true" />-->
+        <!--<action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/SecondFragment" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.appml._view.SearchFragment"
+        android:label="SearchFragment">
+
+        <!--<action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />-->
+        <action
+            android:id="@+id/action_searchFragment_to_productsFragment"
+            app:destination="@id/productsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="com.example.appml._view.ProductsFragment"
+        android:label="ProductsFragment"
+        tools:layout="@layout/fragment_products">
+
+        <action
+            android:id="@+id/action_productsFragment_to_detailProductsFragment"
+            app:destination="@id/detailProductsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.appml.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/detailProductsFragment"
+        android:name="com.example.appml._view.DetailProductFragment"
+        android:label="DetailProductFragment"
+        tools:layout="@layout/fragment_detail_producto">
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
     </fragment>
+
+    <action
+        android:id="@+id/action_global_HomeFragment"
+        app:destination="@id/HomeFragment" />
+
+    <action
+        android:id="@+id/action_global_SearchFragment"
+        app:destination="@id/searchFragment"
+       />
 </navigation>
