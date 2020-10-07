@@ -1,9 +1,11 @@
 package com.example.appml._model.local.historic_search
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+@Dao
 interface HistoricSearchDao {
     @Insert()
     fun insertHistoric(historic: HistoricSearchEntity)
