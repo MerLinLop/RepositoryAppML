@@ -64,35 +64,26 @@ class MainActivity2 :  BaseActivity(), BasicMethods {
 
     override fun initListeners() {
         imageButtonHome.setOnClickListener {
-            //Si esta en home
-            val fragment: List<Fragment> = nav_host_fragment.childFragmentManager.fragments
-            if (fragment.isNotEmpty()) {
-                if (nav_host_fragment.childFragmentManager.fragments[0] is HomeFragment) {
-                    //SI ESTOY EN HOME QUEDA DONDE ESTA
-                } else  {
-                    //SI ESTOY EN OTRO FRAGMENT VUELVE AL HOME
-                    NavHostFragment.findNavController(nav_host_fragment).navigate(R.id.action_global_HomeFragment)
-                    setSearch("",true)
-                }
-            }
+            goHome()
+
         }
         constraintLayout1Search.setOnClickListener {
             goSearch()
         }
     }
-    /*fun goHome() {
-        notificationsOpen = if (mainNavHost.childFragmentManager.fragments.size > 0) {
-            NavHostFragment.findNavController(mainNavHost.childFragmentManager.fragments[0])
-                .navigate(R.id.action_global_HomeFragment)
-            init()
-            false
-        } else {
-            NavHostFragment.findNavController(mainNavHost).navigate(R.id.action_global_HomeFragment)
-            init()
-            false
+    fun goHome() {
+        val fragment: List<Fragment> = nav_host_fragment.childFragmentManager.fragments
+        if (fragment.isNotEmpty()) {
+            if (nav_host_fragment.childFragmentManager.fragments[0] is HomeFragment) {
+                //SI ESTOY EN HOME QUEDA DONDE ESTA
+            } else  {
+                //SI ESTOY EN OTRO FRAGMENT VUELVE AL HOME
+                NavHostFragment.findNavController(nav_host_fragment).navigate(R.id.action_global_HomeFragment)
+                setSearch("",true)
+            }
         }
 
-    }*/
+    }
     fun goSearch() {
         try {
             NavHostFragment.findNavController(nav_host_fragment.childFragmentManager.fragments[0])

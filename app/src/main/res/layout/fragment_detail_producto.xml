@@ -93,7 +93,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageViewProductDetail" />
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/textView1Quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="32dp"
@@ -101,7 +101,7 @@
                 android:fontFamily="@font/lato_light"
 
                 android:paddingRight="20dp"
-                android:text="Cantidad disponible: "
+                android:text="@string/cantidad_disponible"
                 android:textColor="@color/black"
                 android:textSize="12dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,28 +118,48 @@
                 android:textColor="@color/blueMl"
                 android:textSize="12dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/textView1"
-                app:layout_constraintTop_toTopOf="@+id/textView1" />
+                app:layout_constraintStart_toEndOf="@+id/textView1Quantity"
+                app:layout_constraintTop_toTopOf="@+id/textView1Quantity" />
+
+            <Button
+                android:id="@+id/buttonMP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_button_blue"
+                android:fontFamily="@font/lato_regular"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="Pagar con Mercado Pago"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView1Quantity"
+                tools:ignore="RtlCompat" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:paddingBottom="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1">
+                app:layout_constraintTop_toBottomOf="@+id/buttonMP">
 
                 <ImageView
                     android:id="@+id/imageViewShipping"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
                     android:background="@color/transparente"
                     android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_envio"
@@ -171,7 +191,7 @@
                     android:text="@string/envio_gratis"
                     android:textColor="@color/greeMl"
                     android:textSize="12sp"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@+id/imageViewShipping"
                     app:layout_constraintStart_toStartOf="@+id/imageViewShipping"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewShipping" />
@@ -180,18 +200,62 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingBottom="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+
+                <TextView
+                    android:id="@+id/textViewSeller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/lato_regular"
+                    android:maxLines="4"
+                    android:text="@string/sheller_by"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewNameSeller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/lato_regular"
+                    android:maxLines="4"
+                    android:text="@string/sheller_name"
+                    android:textColor="@color/blueMl"
+                    android:textSize="12sp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toEndOf="@+id/textViewSeller"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
                 <ImageView
                     android:id="@+id/imageView3"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="24dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="3dp"
                     android:background="@color/transparente"
@@ -206,7 +270,7 @@
                     android:id="@+id/textViewDetailocityName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/lato_regular"
                     android:maxLines="4"
@@ -248,21 +312,25 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
+            <TextView
                 android:id="@+id/buttonBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
                 android:background="@drawable/shape_button_blue"
                 android:fontFamily="@font/lato_regular"
                 android:paddingLeft="30dp"
+                android:paddingTop="2dp"
                 android:paddingRight="30dp"
+                android:paddingBottom="2dp"
+                android:enabled="true"
+                android:clickable="true"
                 android:text="Volver al inicio"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
                 tools:ignore="RtlCompat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,4 +22,9 @@
     <string name="envio_con_normalidad">Envío con normalidad</string>
     <string name="envio_gratis">Envío gratis</string>
     <string name="envio_a_acordar">Entrega a acordar con el vendedor</string>
+    <string name="cantidad_disponible">Cantidad disponible:</string>
+    <string name="sheller_by">Vendido por:  </string>
+    <string name="sheller_name">EL RINCON DEL COLECCIONANISTA 18 </string>
+    <string name="ultima_unidad">¡Última disponible!</string>
+    <string name="continue_buy">Continuar la compra del producto por MercadoPago</string>
 </resources>

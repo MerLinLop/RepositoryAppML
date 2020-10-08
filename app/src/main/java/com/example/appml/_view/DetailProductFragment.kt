@@ -3,11 +3,14 @@ package com.example.appml._view
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.Glide
@@ -48,8 +51,16 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     lateinit var textViewDetailoStateName: TextView
     @BindView(R.id.imageViewShipping)
     lateinit var imageViewShipping: ImageView
-
-
+    @BindView(R.id.textViewNameSeller)
+    lateinit var textViewNameSeller: TextView
+    @BindView(R.id.textViewSeller)
+    lateinit var textViewSeller: TextView
+    @BindView(R.id.buttonMP)
+    lateinit var buttonMP: Button
+    @BindView(R.id.buttonBack)
+    lateinit var buttonBack: TextView
+    @BindView(R.id.textView1Quantity)
+    lateinit var textView1Quantity: TextView
 
     lateinit var detailProduct: Results
     override fun onAttach(context: Context) {
@@ -91,6 +102,14 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     }
 
     override fun initListeners() {
+        buttonMP.setOnClickListener { v ->
+            showDialog()
+
+        }
+        buttonBack.setOnClickListener { v ->
+            //VOLVER A HOME
+            (getActivity() as MainActivity2).goHome()
+        }
 
     }
      fun setData(){
@@ -106,22 +125,40 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
          val formato = DecimalFormat("#,###")
          val valorFormateado: String = formato.format(detailProduct.price)
          textViewPrice.text="$${valorFormateado}"
-         textViewAvailableQuantity.text="${detailProduct.available_quantity!!.toInt().toString()}"
 
-         if(detailProduct.shipping!=null && detailProduct.shipping!!.free_shipping!!){
-             imageViewShipping.setImageDrawable(resources.getDrawable(R.drawable.ic_envio_free))
-             textViewDetailoShippingFree.visibility=View.VISIBLE
+         if(detailProduct.available_quantity!!.toInt().toString() == "1"){
+             textView1Quantity.text=resources.getString(R.string.ultima_unidad)
+             textViewAvailableQuantity.text=""
+         }else{
+             textViewAvailableQuantity.text="${detailProduct.available_quantity!!.toInt().toString()}"
+         }
+         if(detailProduct.accepts_mercadopago!!){
+             buttonMP.visibility=View.VISIBLE
          }
          if(detailProduct.shipping!=null && detailProduct.shipping!!.mode.equals("me2")){
              textViewDetailoShipping.text=resources.getString(R.string.envio_con_normalidad)
          }
          else{
+             imageViewShipping.setImageDrawable(resources.getDrawable(R.drawable.ic_envio_acordar))
              textViewDetailoShipping.text=resources.getString(R.string.envio_a_acordar)
+         }
+         if(detailProduct.shipping!=null && detailProduct.shipping!!.free_shipping!!){
+             imageViewShipping.setImageDrawable(resources.getDrawable(R.drawable.ic_envio_free))
+             textViewDetailoShippingFree.visibility=View.VISIBLE
+         }
+
+         if(detailProduct.seller!!.permalink!=null){
+             var name:String
+             val fechaArray: Array<String> =
+                 detailProduct.seller!!.permalink.toString().split("/").toTypedArray()
+             name = (fechaArray[fechaArray.size-1]).replace("+"," ")
+             textViewNameSeller.text="${name}"
          }
          if(detailProduct.address!=null){
              textViewDetailocityName.text="${detailProduct.address!!.city_name}"
              textViewDetailoStateName.text="${detailProduct.address!!.state_name}"
          }
+
 
          Glide.with(mContext)
              .load(Uri.parse(detailProduct.thumbnail))
@@ -133,4 +170,13 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
              )
              .into(imageViewProductDetail)
      }
+
+    private fun showDialog() {
+        val layout = layoutInflater.inflate(R.layout.dialog_toast, null)
+        val myToast = Toast(getActivity()!!.applicationContext)
+        myToast.duration = Toast.LENGTH_SHORT
+        myToast.setGravity(Gravity.BOTTOM, 0, 0)
+        myToast.view = layout//setting the view of custom toast layout
+        myToast.show()
+    }
 }
