@@ -46,7 +46,13 @@ class AttributesRecyclerViewAdapter (var context: Context,
         val word = listAtribute[position]
 
         holder.textViewNameAttribute.text = "${word.name}"
-        holder.textViewValueNameAttribute.text = "${word.value_name}"
+        if(word.value_name.equals(null)){
+            holder.textViewValueNameAttribute.text = context.resources.getString(R.string.sindatos)
+        }
+        else{
+            holder.textViewValueNameAttribute.text = "${word.value_name}"
+        }
+
 
 
     }

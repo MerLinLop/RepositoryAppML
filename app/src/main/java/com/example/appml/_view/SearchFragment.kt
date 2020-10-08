@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -128,10 +127,12 @@ class SearchFragment : BaseFragment(), BasicMethods {
         imageViewClose.setOnClickListener { v ->
             (getActivity() as MainActivity2).onBackPressed()
         }
-        searchEditText.requestFocus() //Asegurar que editText tiene focus
-        val imm = (getActivity() as MainActivity2).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm!!.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
 
+        searchEditText.requestFocus()
+        ((getActivity() as MainActivity2).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(
+            InputMethodManager.SHOW_FORCED,
+            InputMethodManager.HIDE_IMPLICIT_ONLY
+        )
     }
 
     fun setAdapter(){

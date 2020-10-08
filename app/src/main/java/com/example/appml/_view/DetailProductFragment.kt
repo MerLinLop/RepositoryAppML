@@ -208,7 +208,6 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
              textViewDetailoShipping.text=resources.getString(R.string.envio_con_normalidad)
          }
          else{
-             imageViewShipping.setImageDrawable(resources.getDrawable(R.drawable.ic_envio_acordar))
              textViewDetailoShipping.text=resources.getString(R.string.envio_a_acordar)
          }
          if(detailProduct.shipping!=null && detailProduct.shipping!!.free_shipping!!){
