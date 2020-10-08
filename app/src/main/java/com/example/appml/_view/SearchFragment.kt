@@ -1,23 +1,18 @@
 package com.example.appml._view
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
@@ -28,11 +23,6 @@ import com.example.appml._view.adapters.WordSearchRecyclerViewAdapter
 import com.example.appml._view.base.BaseFragment
 import com.example.appml._view.base.BasicMethods
 import com.example.appml._viewmodel.SearchViewModel
-import com.example.appml.utils.ResponseObjetBasic
-import kotlinx.android.synthetic.main.activity_main2.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.Serializable
 import java.util.*
 
 
@@ -90,9 +80,9 @@ class SearchFragment : BaseFragment(), BasicMethods {
        // (activity as MainActivity2?)!!.configurarBarra(true)
         //ESCUCHADOR DE LAS PALABRAS BUSCADAS
         mSearchViewModel.listHistoricSearch.observe(viewLifecycleOwner,
-            androidx.lifecycle.Observer { entity: List<HistoricSearchEntity>  ->
+            androidx.lifecycle.Observer { entity: List<HistoricSearchEntity> ->
                 listSearch.clear()
-                for (historic in entity) {
+                for (historic in entity.reversed()) {
                     listSearch.add(historic.palabra.toLowerCase())
                 }
                 setAdapter()
@@ -100,8 +90,10 @@ class SearchFragment : BaseFragment(), BasicMethods {
         )
 
     }
-    fun getproducts(word:String){
-
+    fun getproducts(word: String){
+        val imm = (getActivity() as MainActivity2).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+        (getActivity() as MainActivity2).setSearch(word,false)
         val bundle = Bundle()
         bundle.putString("word", word)
         Navigation.findNavController(searchFragmentView)
@@ -109,29 +101,37 @@ class SearchFragment : BaseFragment(), BasicMethods {
 
     }
     override fun initListeners() {
+
+
         searchEditText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
-                    //BAJAR EL TECLADO AL BUSCAR
+                    if(validateWordSearch()){
+                        val word = searchEditText.text.toString().toLowerCase()
+                        mSearchViewModel.insertSearch(word)
 
-                    val word= searchEditText.text.toString().toLowerCase()
-                    mSearchViewModel.insertSearch(word)
-
-                    getproducts(searchEditText.text.toString())
+                        getproducts(searchEditText.text.toString())
+                    }
                     true
                 }
                 else -> false
             }
         }
         imageViewSearch.setOnClickListener { v ->
+                if(validateWordSearch()){
+                    val word= searchEditText.text.toString().toLowerCase()
+                    mSearchViewModel.insertSearch(word)
+                    getproducts(searchEditText.text.toString())
+                }
 
-            val word= searchEditText.text.toString().toLowerCase()
-            mSearchViewModel.insertSearch(word)
-            getproducts(searchEditText.text.toString())
         }
         imageViewClose.setOnClickListener { v ->
             (getActivity() as MainActivity2).onBackPressed()
         }
+        searchEditText.requestFocus() //Asegurar que editText tiene focus
+        val imm = (getActivity() as MainActivity2).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+
     }
 
     fun setAdapter(){
@@ -150,4 +150,13 @@ class SearchFragment : BaseFragment(), BasicMethods {
         })
     }
 
+    fun validateWordSearch(): Boolean{
+        return if (TextUtils.isEmpty(searchEditText.text.toString())) {
+            searchEditText.requestFocus()
+            //textViewRequeridoTelefonoUsuaio.setVisibility(View.VISIBLE);
+            searchEditText.error =
+                mContext.resources.getString(R.string.error_field)
+            false
+    }else true
+    }
 }

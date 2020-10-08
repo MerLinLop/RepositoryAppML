@@ -3,6 +3,7 @@ package com.example.appml._view.adapters
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.appml.R
 import com.example.appml._model.remote.Results
 import kotlinx.android.synthetic.main.item_destacado.view.*
+import java.text.DecimalFormat
 
 class ProductsRecyclerViewAdapter(
     var context: Context,
@@ -36,10 +38,12 @@ class ProductsRecyclerViewAdapter(
         var imageViewProduct: ImageView
         var textViewNameProduct: TextView
         var textViewPrice: TextView
+        var textViewShipping: TextView
         init {
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct)
             textViewNameProduct = itemView.findViewById(R.id.textViewNameProduct)
             textViewPrice = itemView.findViewById(R.id.textViewPrice)
+            textViewShipping = itemView.findViewById(R.id.textViewShipping)
         }
     }
 
@@ -56,23 +60,37 @@ class ProductsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) {
         val word = listProducts[position]
-        holder.textViewNameProduct.text = "${word.title}"
-        holder.textViewPrice.text = "$${word.price}"
+        try {
+            holder.textViewNameProduct.text = "${word.title}"
+            val formato = DecimalFormat("#,###")
+            val valorFormateado: String = formato.format(word.price!!)
+            holder.textViewPrice.text = "$${valorFormateado}"
+            if(word.shipping!=null && word.shipping!!.mode.equals("me2")){
+                holder.textViewShipping.visibility =View.VISIBLE
+            }
+            else{
+                holder.textViewShipping.visibility =View.INVISIBLE
+            }
 
-        Glide.with(context)
-            .load(Uri.parse(word.thumbnail))
-            .apply(
-                RequestOptions()
-                    .transform( RoundedCorners(10))
-                    .skipMemoryCache(false)
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .fitCenter()
-            )
-            .transition(withCrossFade())
-            .into(holder.imageViewProduct)
+            Glide.with(holder.imageViewProduct.context)
+                .load(Uri.parse(word.thumbnail))
+                .apply(
+                    RequestOptions()
+                        .transform( RoundedCorners(60))
+                        .skipMemoryCache(false)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .fitCenter()
+                )
+                .into(holder.imageViewProduct)
 
-        holder.itemView.setOnClickListener {
-            listener.onClick(word)
+            holder.itemView.setOnClickListener {
+                listener.onClick(word)
+            }
+
+
+
+        }catch (e:Exception){
+            Log.e("CARGA DE LISTA", "Error en el item ${word} ${e.toString()}")
         }
 
 

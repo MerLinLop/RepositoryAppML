@@ -43,7 +43,8 @@ class ProductsFragment: BaseFragment(), BasicMethods {
     lateinit var constraintLayoutSinDatos: ConstraintLayout
     @BindView(R.id.textViewCantProduct)
     lateinit var textViewCantProduct: TextView
-
+    @BindView(R.id.constraintLayoutToolbar)
+    lateinit var constraintLayoutToolbar: ConstraintLayout
     lateinit var adapter: ProductsRecyclerViewAdapter
     var listProduct: MutableList<Results> = ArrayList()
 
@@ -88,7 +89,6 @@ class ProductsFragment: BaseFragment(), BasicMethods {
                     baseOverlayProgress.visibility = View.GONE
                     constraintLayoutSinDatos.visibility=View.VISIBLE
                 }
-
             }
         )
     }
@@ -103,7 +103,7 @@ class ProductsFragment: BaseFragment(), BasicMethods {
                 GlobalScope.launch { mSearchViewModel.seachProduct(word!!) }
             }
             else{
-                textViewCantProduct.visibility = View.GONE
+                constraintLayoutToolbar.visibility = View.GONE
                 baseOverlayProgress.visibility = View.GONE
                 constraintLayoutSinDatos.visibility=View.VISIBLE
                 //Toast.makeText(mContext,"SIN PALABRAS",Toast.LENGTH_SHORT).show()
@@ -117,7 +117,7 @@ class ProductsFragment: BaseFragment(), BasicMethods {
     }
 
     fun setAdapter(){
-        textViewCantProduct.visibility = View.VISIBLE
+        constraintLayoutToolbar.visibility = View.VISIBLE
         textViewCantProduct.text="${listProduct.size.toString()} resultados"
         recyclerViewProducts.layoutManager = LinearLayoutManager(activity)
         recyclerViewProducts.setHasFixedSize(true)

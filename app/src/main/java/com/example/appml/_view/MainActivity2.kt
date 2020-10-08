@@ -3,14 +3,12 @@ package com.example.appml._view
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import butterknife.BindView
@@ -38,7 +36,8 @@ class MainActivity2 :  BaseActivity(), BasicMethods {
     lateinit var layoutBarraAcciones: ConstraintLayout
     @BindView(R.id.imageButtonHome)
     lateinit var imageButtonHome: ImageButton
-
+    @BindView(R.id.textViewSearch)
+    lateinit var textViewSearch: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,28 +68,66 @@ class MainActivity2 :  BaseActivity(), BasicMethods {
             val fragment: List<Fragment> = nav_host_fragment.childFragmentManager.fragments
             if (fragment.isNotEmpty()) {
                 if (nav_host_fragment.childFragmentManager.fragments[0] is HomeFragment) {
-                    //SI ESTOY EN HOME CIERRA APP
+                    //SI ESTOY EN HOME QUEDA DONDE ESTA
                 } else  {
-                    //   overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out)
+                    //SI ESTOY EN OTRO FRAGMENT VUELVE AL HOME
                     NavHostFragment.findNavController(nav_host_fragment).navigate(R.id.action_global_HomeFragment)
+                    setSearch("",true)
                 }
             }
         }
         constraintLayout1Search.setOnClickListener {
-
-            NavHostFragment.findNavController(nav_host_fragment.childFragmentManager.fragments[0]).navigate(R.id.action_global_SearchFragment)
+            goSearch()
         }
     }
+    /*fun goHome() {
+        notificationsOpen = if (mainNavHost.childFragmentManager.fragments.size > 0) {
+            NavHostFragment.findNavController(mainNavHost.childFragmentManager.fragments[0])
+                .navigate(R.id.action_global_HomeFragment)
+            init()
+            false
+        } else {
+            NavHostFragment.findNavController(mainNavHost).navigate(R.id.action_global_HomeFragment)
+            init()
+            false
+        }
 
+    }*/
+    fun goSearch() {
+        try {
+            NavHostFragment.findNavController(nav_host_fragment.childFragmentManager.fragments[0])
+                .navigate(
+                    R.id.action_global_SearchFragment
+                )
+
+        } catch (e: Exception) {
+            e.message?.let { Log.e(TAG, it) }
+        }
+        /*notificationsOpen = if (mainNavHost.childFragmentManager.fragments.size > 0) {
+            NavHostFragment.findNavController(mainNavHost.childFragmentManager.fragments[0])
+                .navigate(R.id.action_global_HomeFragment)
+            init()
+            false
+        } else {
+            NavHostFragment.findNavController(mainNavHost).navigate(R.id.action_global_HomeFragment)
+            init()
+            false
+        }*/
+
+    }
     override fun onBackPressed() {
         val fragment: List<Fragment> = nav_host_fragment.childFragmentManager.fragments
         if (fragment.isNotEmpty()) {
             if (nav_host_fragment.childFragmentManager.fragments[0] is HomeFragment) {
                 //SI ESTOY EN HOME CIERRA APP
                 finish()
-            } else  {
-             //   overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out)
+            } else  if (nav_host_fragment.childFragmentManager.fragments[0] is ProductsFragment){
+                //SI ESTOY EN ProductsFragment VUELVE AL HOME
+                NavHostFragment.findNavController(nav_host_fragment).navigate(R.id.action_global_HomeFragment)
+            }else {
+                //SI ESTOY EN OTRO FRAGMENT VUELVE AL ANTERIOR
                 super.onBackPressed()
+                init()
             }
         }
     }
@@ -103,6 +140,14 @@ class MainActivity2 :  BaseActivity(), BasicMethods {
         } else {
 
             layoutBarraAcciones.visibility = View.VISIBLE
+        }
+    }
+    fun setSearch(
+        word: String, hint:Boolean
+    ) {
+        textViewSearch.text=word
+        if(hint){
+            textViewSearch.hint="Buscar..."
         }
     }
 

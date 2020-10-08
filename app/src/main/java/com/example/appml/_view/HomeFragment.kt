@@ -64,7 +64,7 @@ class HomeFragment : BaseFragment(), BasicMethods {
 
         viewPagerDestacado = homeFragmentView.findViewById(R.id.viewPagerDestacado)
         circleIndicator = homeFragmentView.findViewById(R.id.circleIndicator)
-
+        (getActivity() as MainActivity2).setSearch("",true)
 
 
 
