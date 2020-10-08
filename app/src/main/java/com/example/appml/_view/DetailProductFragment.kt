@@ -3,17 +3,11 @@ package com.example.appml._view
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
-
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.Glide
@@ -23,8 +17,7 @@ import com.example.appml.R
 import com.example.appml._model.remote.Results
 import com.example.appml._view.base.BaseFragment
 import com.example.appml._view.base.BasicMethods
-import kotlinx.android.synthetic.main.item_destacado.view.*
-import java.io.Serializable
+import java.text.DecimalFormat
 
 
 class DetailProductFragment: BaseFragment(), BasicMethods {
@@ -45,6 +38,18 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     lateinit var textViewAvailableQuantity: TextView
     @BindView(R.id.imageViewProductDetail)
     lateinit var imageViewProductDetail: ImageView
+    @BindView(R.id.textViewDetailoShipping)
+    lateinit var textViewDetailoShipping: TextView
+    @BindView(R.id.textViewDetailoShippingFree)
+    lateinit var textViewDetailoShippingFree: TextView
+    @BindView(R.id.textViewDetailocityName)
+    lateinit var textViewDetailocityName: TextView
+    @BindView(R.id.textViewDetailoStateName)
+    lateinit var textViewDetailoStateName: TextView
+    @BindView(R.id.imageViewShipping)
+    lateinit var imageViewShipping: ImageView
+
+
 
     lateinit var detailProduct: Results
     override fun onAttach(context: Context) {
@@ -58,7 +63,11 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
         savedInstanceState: Bundle?
     ): View? {
 
-        detailProductsFragmentView = inflater.inflate(R.layout.fragment_detail_producto, container, false)
+        detailProductsFragmentView = inflater.inflate(
+            R.layout.fragment_detail_producto,
+            container,
+            false
+        )
         ButterKnife.bind(this, detailProductsFragmentView)
 
         initObservables()
@@ -86,13 +95,33 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     }
      fun setData(){
          if(detailProduct.condition.equals("new")){
-             textViewState.text="Nuevo | "
+             textViewState.text="Nuevo  | "
+         }else if(detailProduct.condition.equals("used")){
+             textViewState.text="Usado  | "
          }
-         textViewCantVendidos.text=" ${detailProduct.sold_quantity.toString()} vendidos"
-         textViewTitle.text="${detailProduct.title}"
-         textViewPrice.text="${detailProduct.price}"
-         textViewAvailableQuantity.text="${detailProduct.available_quantity.toString()}"
 
+
+         textViewCantVendidos.text=" ${detailProduct.sold_quantity!!.toInt().toString()} vendidos"
+         textViewTitle.text="${detailProduct.title}"
+         val formato = DecimalFormat("#,###")
+         val valorFormateado: String = formato.format(detailProduct.price)
+         textViewPrice.text="$${valorFormateado}"
+         textViewAvailableQuantity.text="${detailProduct.available_quantity!!.toInt().toString()}"
+
+         if(detailProduct.shipping!=null && detailProduct.shipping!!.free_shipping!!){
+             imageViewShipping.setImageDrawable(resources.getDrawable(R.drawable.ic_envio_free))
+             textViewDetailoShippingFree.visibility=View.VISIBLE
+         }
+         if(detailProduct.shipping!=null && detailProduct.shipping!!.mode.equals("me2")){
+             textViewDetailoShipping.text=resources.getString(R.string.envio_con_normalidad)
+         }
+         else{
+             textViewDetailoShipping.text=resources.getString(R.string.envio_a_acordar)
+         }
+         if(detailProduct.address!=null){
+             textViewDetailocityName.text="${detailProduct.address!!.city_name}"
+             textViewDetailoStateName.text="${detailProduct.address!!.state_name}"
+         }
 
          Glide.with(mContext)
              .load(Uri.parse(detailProduct.thumbnail))

@@ -9,48 +9,57 @@
 
     <include layout="@layout/progress_overlay"/>
 
-    <TextView
-        android:id="@+id/textViewCantProduct"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
         android:background="@color/white"
-        android:ellipsize="end"
-        android:fontFamily="@font/lato_regular"
-        android:gravity="start|left"
-        android:maxLines="1"
-        android:paddingLeft="20dp"
-        android:paddingTop="5dp"
-        android:text="51 resultados"
-        android:textSize="14sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/textViewCantProduct"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_fondo_toolbar"
+            android:ellipsize="end"
+            android:fontFamily="@font/lato_regular"
+            android:gravity="start|left"
+            android:maxLines="1"
+            android:paddingLeft="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:textSize="14sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutSinDatos"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/shadow_bottom"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewNameProduct"
-        android:visibility="gone">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/lato_regular"
+            android:fontFamily="@font/lato_light"
             android:gravity="center_horizontal|center_vertical"
             android:text="@string/sin_datos"
-            android:textColor="@color/black"
-            android:textSize="22dp"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +88,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewCantProduct"
         tools:itemCount="20"
         tools:listitem="@layout/item_producto"
-        />
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

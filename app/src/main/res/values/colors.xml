@@ -10,4 +10,6 @@
     <color name="transparente">#00000000</color>
     <color name="overlay">#65AEACAC</color>
     <color name="blueMl">#3483fa</color>
+    <color name="greeMl">#00a650</color>
+
 </resources>

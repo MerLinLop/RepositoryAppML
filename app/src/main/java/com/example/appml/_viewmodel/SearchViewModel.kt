@@ -44,12 +44,13 @@ class SearchViewModel(application: Application): BaseViewModel(application), Cor
                         entity: Results?,
                         listEntity: List<Results>?
                     ) {
-
                         liveDataListProducts.postValue(listEntity)
                     }
 
                     override fun onError(code: Int, error: String?) {
-
+                        Log.e(TAG,"ERROR TRAER PRODUCTOS $error")
+                        val listEntity: List<Results> = arrayListOf()
+                        liveDataListProducts.postValue(listEntity)
                     }
                 })
         }

@@ -16,5 +16,10 @@
     <string name="bienvenido_a_la_app_de_meli">Bienvenido a la App de MeLi</string>
     <string name="producto">Colageno hidrolizado + Vitaminina C + Q10 + Resvertrol Vitalgen Laboratorios ENA</string>
     <string name="precio">$1010</string>
-    <string name="sin_datos">No hay datos para esa busqueda.\n\ Revisa que la palabra esé bien escrita.</string>
+    <string name="sin_datos">No hay datos para esa búsqueda.\n\ Revisa que la palabra esté bien escrita.</string>
+    <string name="buscar">Buscar...</string>
+    <string name="error_field">Sin palabra para buscar</string>
+    <string name="envio_con_normalidad">Envío con normalidad</string>
+    <string name="envio_gratis">Envío gratis</string>
+    <string name="envio_a_acordar">Entrega a acordar con el vendedor</string>
 </resources>

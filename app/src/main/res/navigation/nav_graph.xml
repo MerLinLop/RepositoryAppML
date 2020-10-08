@@ -11,14 +11,18 @@
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_home">
 
-
         <action
+            android:id="@+id/action_global_SearchFragment"
+            app:destination="@id/searchFragment"
+            app:popUpToInclusive="true"
+            />
+       <!-- <action
             android:id="@+id/action_Home_to_SearchFragment"
             app:destination="@id/searchFragment"
             app:enterAnim="@anim/anim_fade_in"
             app:exitAnim="@anim/anim_fade_out"
             app:popEnterAnim="@anim/anim_fade_in"
-            app:popExitAnim="@anim/anim_fade_out"/>
+            app:popExitAnim="@anim/anim_fade_out"/>-->
         <!--app:popUpToInclusive="true" />-->
         <!--<action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -63,5 +67,6 @@
     <action
         android:id="@+id/action_global_SearchFragment"
         app:destination="@id/searchFragment"
+        app:popUpToInclusive="true"
        />
 </navigation>
