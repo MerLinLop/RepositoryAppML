@@ -3,14 +3,16 @@ package com.example.appml._view
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.Glide
@@ -18,8 +20,18 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.appml.R
 import com.example.appml._model.remote.Results
+import com.example.appml._model.remote.product.DescriptionsProduct
+import com.example.appml._model.remote.product.ProductServer
+import com.example.appml._view.adapters.AttributesRecyclerViewAdapter
+import com.example.appml._view.adapters.DestacadoViewPagerAdapter
+import com.example.appml._view.adapters.WordSearchRecyclerViewAdapter
 import com.example.appml._view.base.BaseFragment
 import com.example.appml._view.base.BasicMethods
+import com.example.appml._viewmodel.HomeViewModel
+import com.example.appml._viewmodel.SearchViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import me.relex.circleindicator.CircleIndicator
 import java.text.DecimalFormat
 
 
@@ -28,7 +40,11 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
 
     lateinit var detailProductsFragmentView: View
     private lateinit var mContext: Context
+    lateinit var mSearchViewModel: SearchViewModel
 
+
+    @BindView(R.id.baseOverlayProgress)
+    lateinit var baseOverlayProgress: FrameLayout
     @BindView(R.id.textViewState)
     lateinit var textViewState: TextView
     @BindView(R.id.textViewCantVendidos)
@@ -39,8 +55,6 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     lateinit var textViewPrice: TextView
     @BindView(R.id.textViewAvailableQuantity)
     lateinit var textViewAvailableQuantity: TextView
-    @BindView(R.id.imageViewProductDetail)
-    lateinit var imageViewProductDetail: ImageView
     @BindView(R.id.textViewDetailoShipping)
     lateinit var textViewDetailoShipping: TextView
     @BindView(R.id.textViewDetailoShippingFree)
@@ -57,10 +71,21 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
     lateinit var textViewSeller: TextView
     @BindView(R.id.buttonMP)
     lateinit var buttonMP: Button
-    @BindView(R.id.buttonBack)
-    lateinit var buttonBack: TextView
     @BindView(R.id.textView1Quantity)
     lateinit var textView1Quantity: TextView
+    @BindView(R.id.textViewTextDescription)
+    lateinit var textViewTextDescription: TextView
+
+    lateinit var adapterDestacado: DestacadoViewPagerAdapter
+    @BindView(R.id.viewPagerPictures)
+    lateinit var viewPagerPictures: ViewPager
+    @BindView(R.id.circleIndicatorPictures)
+    lateinit var circleIndicatorPictures: CircleIndicator
+
+    lateinit var adapterAtributos: AttributesRecyclerViewAdapter
+    @BindView(R.id.recyclerViewCaracteristicas)
+    lateinit var recyclerViewCaracteristicas: RecyclerView
+
 
     lateinit var detailProduct: Results
     override fun onAttach(context: Context) {
@@ -90,12 +115,34 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
 
     override fun initObservables() {
       //  (activity as MainActivity2?)!!.configurarBarra(false)
+        mSearchViewModel = ViewModelProviders.of(this).get(
+            SearchViewModel::class.java
+        )
+
+
+        mSearchViewModel.liveDataItemProducts.observe(viewLifecycleOwner,
+            androidx.lifecycle.Observer { results: ProductServer ->
+                Log.d(TAG, results.toString())
+                setDataExtra(results)
+            }
+        )
+        mSearchViewModel.liveDataDescriptionsProduct.observe(viewLifecycleOwner,
+            androidx.lifecycle.Observer { results: DescriptionsProduct ->
+                Log.d(TAG, results.toString())
+                textViewTextDescription.text=results.plain_text
+            }
+        )
     }
 
     override fun init() {
+
         val bundle = arguments
         if (bundle != null) {
             detailProduct= bundle.getSerializable("product") as Results
+            //OBTENER ATRIBUTOS E IMAGENES
+            GlobalScope.launch { detailProduct.id?.let { mSearchViewModel.getItemProduct(it) } }
+            //OBTENER DESCRIPCION DEL PRODUCTO
+            GlobalScope.launch { detailProduct.id?.let { mSearchViewModel.getDescriptionsProduct(it) } }
             setData()
 
         }
@@ -106,12 +153,34 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
             showDialog()
 
         }
-        buttonBack.setOnClickListener { v ->
-            //VOLVER A HOME
-            (getActivity() as MainActivity2).goHome()
-        }
 
     }
+
+    fun setDataExtra(results: ProductServer){
+        adapterDestacado = DestacadoViewPagerAdapter()
+        viewPagerPictures.adapter = adapterDestacado
+        circleIndicatorPictures.setViewPager(viewPagerPictures)
+        adapterDestacado.registerDataSetObserver(circleIndicatorPictures.dataSetObserver)
+        val listPictures: MutableList<String> = mutableListOf()
+        if(results.body!=null && !results.body!!.pictures.isNullOrEmpty()){
+            for(pictures in results.body!!.pictures!!){
+                listPictures.add(pictures.url.toString())
+            }
+        }
+        if(listPictures.isNotEmpty()){
+            adapterDestacado.add(listPictures)
+        }
+        recyclerViewCaracteristicas.layoutManager = LinearLayoutManager(activity)
+        recyclerViewCaracteristicas.setHasFixedSize(true)
+
+
+        adapterAtributos = mContext.let {
+            AttributesRecyclerViewAdapter(it, results.body!!.attributes!!)
+        }
+        recyclerViewCaracteristicas.adapter = adapterAtributos
+
+    }
+
      fun setData(){
          if(detailProduct.condition.equals("new")){
              textViewState.text="Nuevo  | "
@@ -160,7 +229,7 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
          }
 
 
-         Glide.with(mContext)
+         /*Glide.with(mContext)
              .load(Uri.parse(detailProduct.thumbnail))
              .apply(
                  RequestOptions()
@@ -168,7 +237,7 @@ class DetailProductFragment: BaseFragment(), BasicMethods {
                      .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                      .fitCenter()
              )
-             .into(imageViewProductDetail)
+             .into(imageViewProductDetail)*/
      }
 
     private fun showDialog() {

@@ -10,6 +10,8 @@ import com.example.appml._model.remote._base.ErrorType
 import com.example.appml._model.remote._base.OnResponse
 import com.example.appml._model.remote._base.RemoteErrorEmitter
 import com.example.appml._model.remote._base.ServiceGenerator
+import com.example.appml._model.remote.product.DescriptionsProduct
+import com.example.appml._model.remote.product.ProductServer
 import com.example.appml._model.repositories._base.BaseRemoteRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +36,9 @@ class MLBackend(application: Application):  CoroutineScope, BaseRemoteRepository
     companion object {
         val TAG = MLBackend.javaClass.simpleName
     }
+
+
+    ///API GET PRODUCTOS///////////////////
     suspend fun getSearchApi(
         site_id: String,
         params: Map<String, String>?,
@@ -43,7 +48,7 @@ class MLBackend(application: Application):  CoroutineScope, BaseRemoteRepository
             apiService.getSearchApi(site_id,params)
         }
     }
-
+    ///GET PRODUCTOS COINCIDAN CON LA BUSQUEDA///////////////////
     suspend fun syncSearchProduct(site_id: String,params: Map<String, String>?, onResponse: OnResponse<Results>) {
         var auxLisr: List<Results> = mutableListOf()
         getSearchApi(site_id,params, object : RemoteErrorEmitter {
@@ -62,5 +67,65 @@ class MLBackend(application: Application):  CoroutineScope, BaseRemoteRepository
             }
         }
         onResponse.onResponse(OnResponse.ResponseType.OK, null, auxLisr)
+    }
+
+    ///API GET DETALLE PRODUCTO///////////////////
+    suspend fun getProductApi(
+        params: Map<String, String>?,
+        remoteErrorEmitter: RemoteErrorEmitter
+    ): List<ProductServer>? {
+        return safeApiCall(remoteErrorEmitter) {
+            apiService.getProductApi(params)
+        }
+    }
+    ///GET DETALLE PRODUCTO (ATRIBUTOS Y FOTOS))///////////////////
+    suspend fun syncProduct(params: Map<String, String>?, onResponse: OnResponse<ProductServer>) {
+        var auxLisr: List<ProductServer> = mutableListOf()
+        getProductApi(params, object : RemoteErrorEmitter {
+            override fun onError(msg: String) {
+                Log.e(TAG, "error:  $msg")
+                onResponse.onError(0, msg)
+            }
+            override fun onError(errorType: ErrorType) {
+                Log.e(TAG, "error:  $errorType.name")
+                onResponse.onError(0, errorType.name)
+            }
+        })?.let { list ->
+            Log.d(TAG, "BUSQUEDA PRODUCTO:  $list")
+                auxLisr= list
+
+        }
+        onResponse.onResponse(OnResponse.ResponseType.OK,null ,auxLisr )
+    }
+
+
+
+    ///API GET DETALLE DESCRIPCION PRODUCTO///////////////////
+    suspend fun getProductDescriptApi(
+        item_id: String,
+        remoteErrorEmitter: RemoteErrorEmitter
+    ): List<DescriptionsProduct>? {
+        return safeApiCall(remoteErrorEmitter) {
+            apiService.getProductDescriptApi(item_id)
+        }
+    }
+    ///GET DETALLE DESCRIPCION PRODUCTO (DESCRIPCION))///////////////////
+    suspend fun syncDescriptionProduct(item_id: String, onResponse: OnResponse<DescriptionsProduct>) {
+        var auxLisr: List<DescriptionsProduct> = mutableListOf()
+        getProductDescriptApi(item_id, object : RemoteErrorEmitter {
+            override fun onError(msg: String) {
+                Log.e(TAG, "error:  $msg")
+                onResponse.onError(0, msg)
+            }
+            override fun onError(errorType: ErrorType) {
+                Log.e(TAG, "error:  $errorType.name")
+                onResponse.onError(0, errorType.name)
+            }
+        })?.let { list ->
+            Log.d(TAG, "BUSQUEDA PRODUCTO:  $list")
+            auxLisr= list
+
+        }
+        onResponse.onResponse(OnResponse.ResponseType.OK, null,auxLisr )
     }
 }

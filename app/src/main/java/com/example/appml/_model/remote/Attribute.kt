@@ -23,3 +23,4 @@ class Attribute : Serializable {
         additionalProperties[name] = value
     }
 }
+
